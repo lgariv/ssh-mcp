@@ -20,14 +20,14 @@ Scripts:
 
 Remote HTTP usage via Smithery (MCP JSON config):
 
-Add this to your MCP client config after deployment (replace the URL with your Smithery server URL):
+Add this to your MCP client config to use the remote server deployed at `@lgariv/ssh-mcp`:
 
 ```json
 {
   "mcpServers": {
     "ssh-mcp-remote": {
       "type": "http",
-      "url": "https://server.smithery.ai/<owner>/<repo>/mcp"
+      "url": "https://server.smithery.ai/lgariv/ssh-mcp/mcp"
     }
   }
 }
@@ -35,23 +35,54 @@ Add this to your MCP client config after deployment (replace the URL with your S
 
 Note: SSH connection details (`sshHost`, `sshPort`, `sshUsername`, `sshPassword`) are supplied in Smithery's server configuration UI at connect time, not in your local MCP JSON.
 
-Example MCP config entry:
+### Local stdio usage (SSH runs from your machine)
+
+1) Install locally
+
+```bash
+git clone https://github.com/lgariv/ssh-mcp
+cd ssh-mcp
+npm install
+npm run build
+```
+
+2) Add to your MCP client config
 
 ```json
 {
   "mcpServers": {
-    "ssh-mcp": {
+    "ssh-mcp-local": {
       "command": "node",
       "args": ["./dist/index.js"],
       "env": {
-        "SSH_HOST": "192.0.2.10",
+        "SSH_HOST": "1.2.3.4",
         "SSH_PORT": "22",
         "SSH_USERNAME": "ubuntu",
-        "SSH_PASSWORD": "supersecret"
+        "SSH_PASSWORD": "your-password"
       }
     }
   }
 }
 ```
 
+### Local stdio without cloning (via Smithery CLI)
 
+Keeps execution local but avoids cloning the repo:
+
+```json
+{
+  "mcpServers": {
+    "ssh-mcp-local": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@smithery/cli@latest", "run", "@lgariv/ssh-mcp"],
+      "env": {
+        "SSH_HOST": "1.2.3.4",
+        "SSH_PORT": "22",
+        "SSH_USERNAME": "ubuntu",
+        "SSH_PASSWORD": "your-password"
+      }
+    }
+  }
+}
+```
