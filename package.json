@@ -1,11 +1,15 @@
 {
-  "name": "ssh-mcp",
-  "version": "1.0.0",
+  "name": "@lgariv/ssh-mcp",
+  "version": "1.0.2",
   "type": "module",
   "module": "./src/smithery.ts",
   "main": "dist/index.js",
+  "bin": {
+    "ssh-mcp": "./dist/cli.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "postbuild": "node -e \"if(process.platform!=='win32'){require('fs').chmodSync('dist/cli.js',0o755)}\"",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "lint": "echo 'no linter configured'",
@@ -14,10 +18,21 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["mcp", "ssh", "remote", "server"],
+  "author": "lgariv",
   "license": "ISC",
-  "description": "",
+  "description": "SSH MCP server for remote command execution. Supports local networks via NPM/source or public servers via Smithery.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lgariv/ssh-mcp"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "smithery.yaml",
+    "examples"
+  ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.2",
     "ssh2": "^1.16.0",

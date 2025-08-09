@@ -1,0 +1,49 @@
+{
+  "examples": {
+    "method1_from_source": {
+      "_comment": "Method 1: Running from local source code (for development)",
+      "mcpServers": {
+        "ssh-mcp-dev": {
+          "command": "node",
+          "args": ["./path/to/ssh-mcp/dist/index.js"],
+          "env": {
+            "SSH_HOST": "192.168.1.100",
+            "SSH_PORT": "22",
+            "SSH_USERNAME": "developer",
+            "SSH_PASSWORD": "dev-password"
+          }
+        }
+      }
+    },
+    "method2_npm_package": {
+      "_comment": "Method 2: Using NPM package (recommended for local networks)",
+      "mcpServers": {
+        "ssh-mcp-local": {
+          "command": "npx",
+          "args": ["-y", "@lgariv/ssh-mcp@latest"],
+          "env": {
+            "SSH_HOST": "10.0.0.116",
+            "SSH_PORT": "22",
+            "SSH_USERNAME": "admin",
+            "SSH_PASSWORD": "secure-password"
+          }
+        }
+      }
+    },
+    "method3_smithery": {
+      "_comment": "Method 3: Via Smithery HTTP (only for public servers)",
+      "mcpServers": {
+        "ssh-mcp-public": {
+          "type": "http",
+          "url": "https://server.smithery.ai/lgariv/ssh-mcp/mcp",
+          "config": {
+            "sshHost": "public-server.example.com",
+            "sshPort": 22,
+            "sshUsername": "ubuntu",
+            "sshPassword": "public-server-password"
+          }
+        }
+      }
+    }
+  }
+}

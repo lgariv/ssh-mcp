@@ -1,44 +1,19 @@
-### SSH MCP Server (TypeScript, Node 22)
+# SSH MCP Server
 
-Provides two tools over MCP stdio transport:
+A Model Context Protocol (MCP) server that enables SSH connectivity and remote command execution. This server can run locally to access private networks or via Smithery for public servers.
 
-- **ssh_test_connection**: Tests connectivity to the configured host and returns hostname.
-- **ssh_run**: Executes a command remotely and returns stdout, stderr, and exit code.
+## Features
 
-Environment variables expected (set via MCP server configuration JSON):
+- **ssh_test_connection**: Tests connectivity to the configured host and returns hostname
+- **ssh_run**: Executes commands remotely and returns stdout, stderr, and exit code
 
-- `SSH_HOST`: target IP/hostname
-- `SSH_PORT`: optional, defaults to `22`
-- `SSH_USERNAME`: SSH username
-- `SSH_PASSWORD`: SSH password
+## Installation Methods
 
-Scripts:
+### Method 1: From Source (For Development)
 
-- `npm run dev` — run server with tsx
-- `npm run build` — compile to `dist/`
-- `npm start` — run compiled server
+Best for developers who want to modify the code or contribute to the project.
 
-Remote HTTP usage via Smithery (MCP JSON config):
-
-Add this to your MCP client config to use the remote server deployed at `@lgariv/ssh-mcp`:
-
-```json
-{
-  "mcpServers": {
-    "ssh-mcp-remote": {
-      "type": "http",
-      "url": "https://server.smithery.ai/lgariv/ssh-mcp/mcp"
-    }
-  }
-}
-```
-
-Note: SSH connection details (`sshHost`, `sshPort`, `sshUsername`, `sshPassword`) are supplied in Smithery's server configuration UI at connect time, not in your local MCP JSON.
-
-### Local stdio usage (SSH runs from your machine)
-
-1) Install locally
-
+1. Clone and build:
 ```bash
 git clone https://github.com/lgariv/ssh-mcp
 cd ssh-mcp
@@ -46,16 +21,15 @@ npm install
 npm run build
 ```
 
-2) Add to your MCP client config
-
+2. Add to your MCP client config:
 ```json
 {
   "mcpServers": {
-    "ssh-mcp-local": {
+    "ssh-mcp": {
       "command": "node",
-      "args": ["./dist/index.js"],
+      "args": ["path/to/ssh-mcp/dist/index.js"],
       "env": {
-        "SSH_HOST": "1.2.3.4",
+        "SSH_HOST": "192.168.1.100",
         "SSH_PORT": "22",
         "SSH_USERNAME": "ubuntu",
         "SSH_PASSWORD": "your-password"
@@ -65,24 +39,107 @@ npm run build
 }
 ```
 
-### Local stdio without cloning (via Smithery CLI)
+### Method 2: Via NPM Package (Recommended for Local Networks)
 
-Keeps execution local but avoids cloning the repo:
+Best for accessing servers on your local network (LAN) or private IPs. Runs on your machine.
 
+Add to your MCP client config:
 ```json
 {
   "mcpServers": {
-    "ssh-mcp-local": {
-      "type": "stdio",
+    "ssh-mcp": {
       "command": "npx",
-      "args": ["-y", "@smithery/cli@latest", "run", "@lgariv/ssh-mcp"],
+      "args": ["-y", "@lgariv/ssh-mcp@latest"],
       "env": {
-        "SSH_HOST": "1.2.3.4",
+        "SSH_HOST": "10.0.0.116",
         "SSH_PORT": "22",
-        "SSH_USERNAME": "ubuntu",
+        "SSH_USERNAME": "admin",
         "SSH_PASSWORD": "your-password"
       }
     }
   }
 }
 ```
+
+**Benefits:**
+- No installation required
+- Always uses the latest version
+- Can access local network resources (192.168.x.x, 10.x.x.x, etc.)
+- Credentials stay on your machine
+
+### Method 3: Via Smithery (For Public Servers Only)
+
+Best for accessing publicly accessible SSH servers. Runs on Smithery's infrastructure.
+
+⚠️ **Important:** This method only works with publicly accessible servers. It cannot access private IPs or LAN resources.
+
+Add to your MCP client config:
+```json
+{
+  "mcpServers": {
+    "ssh-mcp": {
+      "type": "http",
+      "url": "https://server.smithery.ai/lgariv/ssh-mcp/mcp",
+      "config": {
+        "sshHost": "public.example.com",
+        "sshPort": 22,
+        "sshUsername": "ubuntu",
+        "sshPassword": "your-password"
+      }
+    }
+  }
+}
+```
+
+## Configuration
+
+All methods require these environment variables or config parameters:
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `SSH_HOST` / `sshHost` | Target SSH server IP/hostname | Required |
+| `SSH_PORT` / `sshPort` | SSH port number | 22 |
+| `SSH_USERNAME` / `sshUsername` | SSH username | Required |
+| `SSH_PASSWORD` / `sshPassword` | SSH password | Required |
+
+## Use Cases by Method
+
+| Use Case | Recommended Method |
+|----------|-------------------|
+| Local home lab servers | Method 2 (NPM) |
+| Raspberry Pi on LAN | Method 2 (NPM) |
+| Local VMs or containers | Method 2 (NPM) |
+| Development and testing | Method 1 (Source) |
+| Cloud VPS with public IP | Method 3 (Smithery) |
+| Public web servers | Method 3 (Smithery) |
+
+## Security Notes
+
+- **Methods 1 & 2**: Credentials are stored locally in your MCP configuration
+- **Method 3**: Credentials are sent to Smithery's servers (use only with public servers)
+- Always use strong passwords and consider SSH keys for production use
+- Ensure your MCP configuration file has appropriate permissions
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run in development mode
+npm run dev
+
+# Build for production
+npm run build
+
+# Run built version
+npm start
+```
+
+## License
+
+ISC
+
+## Author
+
+lgariv

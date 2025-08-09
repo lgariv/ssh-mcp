@@ -2,6 +2,7 @@ runtime: "typescript"
 env:
   NODE_ENV: "production"
 startCommand:
+  # HTTP configuration for Smithery deployment (public servers only)
   type: http
   configSchema:
     type: object
@@ -10,7 +11,7 @@ startCommand:
       sshHost:
         type: string
         title: "SSH Host"
-        description: "Target SSH IP/hostname"
+        description: "Target SSH server (must be publicly accessible)"
       sshPort:
         type: integer
         title: "SSH Port"
@@ -23,9 +24,9 @@ startCommand:
       sshPassword:
         type: string
         title: "SSH Password"
+        format: "password"
   exampleConfig:
-    sshHost: "192.0.2.10"
+    sshHost: "public.example.com"
     sshPort: 22
     sshUsername: "ubuntu"
-    sshPassword: "supersecret"
-
+    sshPassword: "your-password"
