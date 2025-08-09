@@ -1,0 +1,31 @@
+runtime: "typescript"
+env:
+  NODE_ENV: "production"
+startCommand:
+  type: http
+  configSchema:
+    type: object
+    required: ["sshHost", "sshUsername", "sshPassword"]
+    properties:
+      sshHost:
+        type: string
+        title: "SSH Host"
+        description: "Target SSH IP/hostname"
+      sshPort:
+        type: integer
+        title: "SSH Port"
+        default: 22
+        minimum: 1
+        maximum: 65535
+      sshUsername:
+        type: string
+        title: "SSH Username"
+      sshPassword:
+        type: string
+        title: "SSH Password"
+  exampleConfig:
+    sshHost: "192.0.2.10"
+    sshPort: 22
+    sshUsername: "ubuntu"
+    sshPassword: "supersecret"
+
